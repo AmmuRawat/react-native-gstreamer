@@ -29,7 +29,9 @@ android {
                 targets "gstreamer"
 
                 // All archs except MIPS and MIPS64 are supported
-                abiFilters 'x86', 'armeabi', 'armeabi-v7a'
+                //abiFilters 'x86', 'armeabi', 'armeabi-v7a'
+                //We have added the new abi filters and commented the previous one as they are deprecated
+                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
             }
         }
     }
@@ -42,7 +44,8 @@ android {
 }
 
 dependencies {
-    compile "com.facebook.react:react-native:+"  // From node_modules
+    //compile "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:+"
 }
 
 afterEvaluate {
