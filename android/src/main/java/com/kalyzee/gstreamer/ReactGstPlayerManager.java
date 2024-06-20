@@ -2,7 +2,11 @@ package com.kalyzee.gstreamer;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+// import android.support.annotation.Nullable;
+
+// ***The above import statement is deprecated so below we are using new one ****
+import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.widget.ProgressBar;
 
