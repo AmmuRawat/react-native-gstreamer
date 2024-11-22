@@ -101,17 +101,17 @@ public class ReactGstPlayerManager extends SimpleViewManager<GstPlayer> {
         return new GstPlayer(reactContext);
     }
 
-    @ReactProp(name = "uri")
-    public void setUri(GstPlayer view, String uri) {
-        view.setMediaUri(uri);
-    }
+    // @ReactProp(name = "uri")
+    // public void setUri(GstPlayer view, String uri) {
+    //     // view.setMediaUri(uri);
+    // }
 
     @ReactProp(name = "play")
     public void setPlayState(GstPlayer view, boolean play) {
         view.setPlay(play);
     }
 
-    @Nullable
+    
     @Override
     public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.<String, Object>builder()
@@ -119,4 +119,10 @@ public class ReactGstPlayerManager extends SimpleViewManager<GstPlayer> {
                         "registrationName", "onAudioLevelChange")
                 ).build();
     }
+
+    @ReactProp(name = "nativeFlag")
+    public void setNativeFlag(GstPlayer view, boolean flag) {
+        view.setNativeFlag(flag); // You'll implement this method in your GstPlayer class
+}
+
 }

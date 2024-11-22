@@ -28,5 +28,4 @@ public class ReactGstPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         return Collections.emptyList();
     }
-
 }

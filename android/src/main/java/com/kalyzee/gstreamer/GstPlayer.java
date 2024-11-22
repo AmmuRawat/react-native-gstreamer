@@ -194,23 +194,18 @@ import org.freedesktop.gstreamer.GStreamer;
 
 public class GstPlayer extends TextureView implements SurfaceTextureListener {
 
+    private native String nativeGetGStreamerInfo();
+    private native void nativePlay();
     private native void nativeInit();     // Initialize native code, build pipeline, etc
-
     private native void nativeFinalize(); // Destroy pipeline and shutdown native code
-
-    private native void nativePlay();     // Set pipeline to PLAYING
-
     private native void nativePause();    // Set pipeline to PAUSED
-
-    private native void nativeSetUri(String uri); // Set the URI of the media to play
-
     private static native boolean nativeClassInit(); // Initialize native class: cache Method IDs for callbacks
-
-    private native void nativeSetPosition(int milliseconds); // Seek to the indicated position, in milliseconds
-
     private native void nativeSurfaceInit(Object surface);
-
     private native void nativeSurfaceFinalize();
+    private long native_custom_data;      // Native code will use this to keep private data
+    private native void nativeSetFlag(boolean flag);
+
+    // private boolean is_playing_desired;   // Whether the user asked to go to PLAYING
 
     private boolean isReady;
 
@@ -224,7 +219,7 @@ public class GstPlayer extends TextureView implements SurfaceTextureListener {
     static private final int PICK_FILE_CODE = 1;
     private String last_folder;
 
-    private long native_custom_data;      // Native code will use this to keep private data
+    // private long native_custom_data;      // Native code will use this to keep private data
     private boolean is_playing_desired = true;   // Whether the user asked to go to PLAYING
 
     public GstPlayer(Context context, AttributeSet attrs, int defStyle) {
@@ -246,10 +241,18 @@ public class GstPlayer extends TextureView implements SurfaceTextureListener {
     public GstPlayer(Context context) {
         this(context, null);
     }
-
+    
+    public void setFixedVideoSize(int width, int height) {
+        getLayoutParams().width = width;
+        getLayoutParams().height = height;
+        requestLayout();
+    }
+    
+    
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         Log.i("gst-player", "Surface created: " + surface);
+        setFixedVideoSize(1280, 720);  // Set the fixed size here
         nativeSurfaceInit(new Surface(surface));
     }
 
@@ -295,7 +298,7 @@ public class GstPlayer extends TextureView implements SurfaceTextureListener {
     private void setMessage(final String message) {
         if (message.equals("State changed to READY")) {
             Log.i("gst-player", "READY " + this.mediaUri);
-            nativePlay();
+            // nativePlay();
         }
     }
 
@@ -305,9 +308,9 @@ public class GstPlayer extends TextureView implements SurfaceTextureListener {
 
     private void onGStreamerInitialized() {
         Log.i("gst-player", "Gst initialized. Restoring state, playing:" + is_playing_desired);
-        nativeSetPosition(position);
+        // nativeSetPosition(position);
         if (is_playing_desired) {
-            nativePlay();
+            // nativePlay();
         } else {
             nativePause();
         }
@@ -316,7 +319,7 @@ public class GstPlayer extends TextureView implements SurfaceTextureListener {
     public void setPlay(boolean play) {
         is_playing_desired = play;
         if (play && isReady) {
-            nativePlay();
+            // nativePlay();
         } else {
             if (!play && isReady) {
                 nativePause();
@@ -324,14 +327,23 @@ public class GstPlayer extends TextureView implements SurfaceTextureListener {
         }
     }
 
-    public void setMediaUri(String uri) {
-        this.mediaUri = uri;
-        nativeSetUri(uri);
+    public void setNativeFlag(boolean flag) {
+        nativeSetFlag(flag);  // This calls the C++ method
     }
+
+
+    // public void setMediaUri(String uri) {
+    //     this.mediaUri = uri;
+    //     // nativeSetUri(uri);
+    // }
 
     static {
         System.loadLibrary("gstreamer_android");
-        System.loadLibrary("gstreamer");
+//        System.loadLibrary("tutorial-3");
+        System.loadLibrary("native-lib");
+        // System.loadLibrary("opencv_java4");
+
+//        System.loadLibrary("wireless-streaming");
         nativeClassInit();
     }
 }
